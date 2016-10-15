@@ -49,11 +49,56 @@ class Club
                 if ($club_object->club_officer_3 != 0) {
                     $club_object->club_officer_3 = User::_GET($pdo, $club_object->club_officer_3);
                 }
+                if($club_object->club_school_code != 0){
+                    $club_object->club_school_code = School::_GET($pdo,$club_object->club_school_code);
+                }
             }
             return $club;
         }
         return NULL;
     }
+
+
+    /**
+     * @param PDO $pdo
+     * @param $id
+     * @return Club[]|null
+     */
+    public static function _GET_BY_SCHOOL(PDO $pdo, $school_code)
+    {
+        $query = "SELECT * FROM Clubs WHERE Clubs.club_school_code = :club_school_code";
+        $stmt = $pdo->prepare($query);
+        $stmt->bindParam(":club_school_code", $school_code);
+        if ($stmt->execute()) {
+            /**
+             * @var Club $club_object
+             */
+            /**
+             * @var Club[] $club
+             */
+            $club = $stmt->fetchAll(PDO::FETCH_CLASS, 'Club');
+            foreach ($club as $club_object) {
+                if ($club_object->club_president_id != 0) {
+                    $club_object->club_president_id = User::_GET($pdo, $club_object->club_president_id);
+                }
+                if ($club_object->club_officer_1 != 0) {
+                    $club_object->club_officer_1 = User::_GET($pdo, $club_object->club_officer_1);
+                }
+                if ($club_object->club_officer_2 != 0) {
+                    $club_object->club_officer_2 = User::_GET($pdo, $club_object->club_officer_2);
+                }
+                if ($club_object->club_officer_3 != 0) {
+                    $club_object->club_officer_3 = User::_GET($pdo, $club_object->club_officer_3);
+                }
+                if($club_object->club_school_code != 0){
+                    $club_object->club_school_code = School::_GET($pdo,$club_object->club_school_code);
+                }
+            }
+            return $club;
+        }
+        return NULL;
+    }
+
 
     /**
      * @param PDO $pdo
@@ -67,10 +112,25 @@ class Club
         $stmt->bindParam(":club_id", $id);
         if ($stmt->execute()) {
             /**
-             * @var Club $club
+             * @var Club $club_object
              */
-            $club = $stmt->fetchObject(Club::class);
-            return $club;
+            $club_object = $stmt->fetchObject(Club::class);
+            if ($club_object->club_president_id != 0) {
+                $club_object->club_president_id = User::_GET($pdo, $club_object->club_president_id);
+            }
+            if ($club_object->club_officer_1 != 0) {
+                $club_object->club_officer_1 = User::_GET($pdo, $club_object->club_officer_1);
+            }
+            if ($club_object->club_officer_2 != 0) {
+                $club_object->club_officer_2 = User::_GET($pdo, $club_object->club_officer_2);
+            }
+            if ($club_object->club_officer_3 != 0) {
+                $club_object->club_officer_3 = User::_GET($pdo, $club_object->club_officer_3);
+            }
+            if($club_object->club_school_code != 0){
+                $club_object->club_school_code = School::_GET($pdo,$club_object->club_school_code);
+            }
+            return $club_object;
         }
         return NULL;
     }

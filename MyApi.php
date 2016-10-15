@@ -8,7 +8,7 @@ require_once 'models/Announcement.php';
 require_once 'models/ScheduleDate.php';
 require_once 'models/Major.php';
 require_once 'models/Club.php';
-
+require_once 'models/School.php';
 
 // Start session management
 
@@ -109,7 +109,7 @@ class MyAPI extends API
         }
     }
 
-    function get_clubs()
+    function find_clubs()
     {
         if ($this->method == 'GET') {
             $name = $this->api_param("name",true);
@@ -119,6 +119,29 @@ class MyAPI extends API
             return $this->method_mismatch_get();
         }
     }
+
+    function get_club_by_school()
+    {
+        if ($this->method == 'GET') {
+            $school = $this->api_param("school",true);
+            $club = Club::_GET_BY_SCHOOL(self::getPdoInstance(),$school);
+            return $this->response($club != NULL ? 200 : 500, "Clubs","Clubs", $club);
+        }else{
+            return $this->method_mismatch_get();
+        }
+    }
+
+    function get_club()
+    {
+        if ($this->method == 'GET') {
+            $id = $this->api_param("id",true);
+            $club = Club::_GET_BY_ID(self::getPdoInstance(),$id);
+            return $this->response($club != NULL ? 200 : 500, "Clubs","Clubs", $club);
+        }else{
+            return $this->method_mismatch_get();
+        }
+    }
+
     function user_register()
     {
         if ($this->method == 'GET') {
