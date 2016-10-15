@@ -44,8 +44,7 @@ class Major
             $major = $stmt->fetchObject(Major::class);
             return $major;
         }
-        return NULL;
+        return null;
     }
-
 
 }

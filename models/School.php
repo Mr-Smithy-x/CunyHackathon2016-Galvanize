@@ -31,7 +31,7 @@ class School
             $school = $stmt->fetchObject(School::class);
             return $school;
         }
-        return NULL;
+        return null;
     }
 
 

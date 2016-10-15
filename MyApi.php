@@ -81,18 +81,19 @@ class MyAPI extends API
                 $_user['user'] = $user;
                 $_user['major'] = $this->get_major($user->user_major_id);
                 return $this->response(200, "User Found", "User information", $_user);
-            }else return $this->response(500, "User Not Found", "No user information", null);
+            } else return $this->response(500, "User Not Found", "No user information", null);
         } else {
             return $this->method_mismatch_get();
         }
     }
 
-    function update_profile(){
+    function update_profile()
+    {
         if ($this->method == 'POST') {
             $key = $this->api_param('key', true);
-            $user = User::_GET_BY_KEY($this->getPdoInstance(),$key);
+            $user = User::_GET_BY_KEY($this->getPdoInstance(), $key);
             $response = false;
-            if($user != null) {
+            if ($user != null) {
                 $user->user_firstname = $this->api_param('firstname', false, $user->user_firstname);
                 $user->user_lastname = $this->api_param('lastname', false, $user->user_lastname);
                 $user->user_email = $this->api_param('email', false, $user->user_email);
@@ -103,8 +104,8 @@ class MyAPI extends API
                 $user->setUserPassword($this->api_param($this->getHash('password'), false, $user->getUserPassword()));
                 $response = User::_UPDATE($this->getPdoInstance(), $user);
             }
-            return $this->response($response == true ? 200 : 500, $response == true ? "Updated" : "Failed",  $response == true ? "You're profile was updated successfully" : "You're profile was not updated", $response == true ? $user : null);
-        }else{
+            return $this->response($response == true ? 200 : 500, $response == true ? "Updated" : "Failed", $response == true ? "You're profile was updated successfully" : "You're profile was not updated", $response == true ? $user : null);
+        } else {
             return $this->method_mismatch_post();
         }
     }
@@ -112,10 +113,21 @@ class MyAPI extends API
     function find_clubs()
     {
         if ($this->method == 'GET') {
-            $name = $this->api_param("name",true);
-            $club = Club::_GET(self::getPdoInstance(),$name);
-            return $this->response($club != NULL ? 200 : 500, "Clubs","Clubs", $club);
-        }else{
+            $name = $this->api_param("name", true);
+            $club = Club::_GET(self::getPdoInstance(), $name);
+            return $this->response($club != NULL ? 200 : 500, "Clubs", "Clubs", $club);
+        } else {
+            return $this->method_mismatch_get();
+        }
+    }
+
+    function is_president()
+    {
+        if ($this->method == 'GET') {
+            $id = $this->api_param("uid",true);
+            $club = User::_IS_PRESIDENT(self::getPdoInstance(), $id);
+            return $this->response($club != null ? 200 : 500, "Club", "Club", $club);
+        } else {
             return $this->method_mismatch_get();
         }
     }
@@ -123,9 +135,31 @@ class MyAPI extends API
     function get_club_by_school()
     {
         if ($this->method == 'GET') {
-            $school = $this->api_param("school",true);
-            $club = Club::_GET_BY_SCHOOL(self::getPdoInstance(),$school);
-            return $this->response($club != NULL ? 200 : 500, "Clubs","Clubs", $club);
+            $school = $this->api_param("school", true);
+            $name = $this->api_param("name", false, null);
+            $club = Club::_GET_BY_SCHOOL(self::getPdoInstance(), $school, $name);
+            return $this->response($club != NULL ? 200 : 500, "Clubs", "Clubs", $club);
+        } else {
+            return $this->method_mismatch_get();
+        }
+    }
+
+    function get_all_clubs()
+    {
+        if ($this->method == 'GET') {
+            $club = Club::_GET_ALL_CLUBS(self::getPdoInstance());
+            return $this->response($club != NULL ? 200 : 500, "Clubs", "Clubs", $club);
+        } else {
+            return $this->method_mismatch_get();
+        }
+    }
+
+    function join_club(){
+        if($this->method == 'GET'){
+            $uid = $this->api_param("uid");
+            $cid = $this->api_param("cid");
+            $res = Club::_JOIN(self::getPdoInstance(), $uid, $cid);
+            return $this->response($res ? 200 : 500,"Club",$res ? "Joined" : "Error Joining",$res ? "Welcome to the club!" : "It seems to be that you already joined this club?");
         }else{
             return $this->method_mismatch_get();
         }
@@ -134,10 +168,10 @@ class MyAPI extends API
     function get_club()
     {
         if ($this->method == 'GET') {
-            $id = $this->api_param("id",true);
-            $club = Club::_GET_BY_ID(self::getPdoInstance(),$id);
-            return $this->response($club != NULL ? 200 : 500, "Clubs","Clubs", $club);
-        }else{
+            $id = $this->api_param("id", true);
+            $club = Club::_GET_BY_ID(self::getPdoInstance(), $id);
+            return $this->response($club != NULL ? 200 : 500, "Clubs", "Clubs", $club);
+        } else {
             return $this->method_mismatch_get();
         }
     }
